@@ -23,7 +23,7 @@ def make_shower(args):
         thetas = np.random.normal(loc=theta0, scale=dtheta, size=(args['nlines'], 1))
     else:
         dtheta = args['dtheta']
-        thetas = np.linspace(0., 2.*dtheta, args['nlines']).reshape(args['nlines'], 1)
+        thetas = np.linspace(theta0-dtheta, theta0+dtheta, args['nlines']).reshape(args['nlines'], 1)
         #thetas = np.random.uniform(low=0., high=2.*dtheta, size=(args['nlines'], 1))
         
     lengths = np.random.uniform(low=args['lmin'], high=args['lmax'], size=(args['nlines'], 1))
@@ -43,6 +43,7 @@ def make_shower(args):
     return img, (vx,vy), (2.*dtheta)
 
 def make_showerset(args):
+    blob = {}
     batch_data = np.zeros((args['nimages'], args['nx'], args['ny']))
     batch_angles = np.zeros((args['nimages'],))
     for i in range(args['nimages']):
@@ -55,9 +56,12 @@ def make_showerset(args):
             plt.close()
         if i != 0 and i%20==0: print(i, ' done')
     #batch_data = batch_data.reshape(args['nimages'], args['nx'], args['ny'], 1)
-    np.savetxt('batch_data_shower.txt', batch_data.reshape(-1))
-    np.savetxt('batch_angles.txt', batch_angles)
-    return batch_data.shape
+    #np.savetxt('batch_data_shower.txt', batch_data.reshape(-1))
+    #np.savetxt('batch_angles.txt', batch_angles)
+    blob['data'] = batch_data
+    blob['labels'] = np.zeros(args['nimages'],)
+    blob['angles'] = batch_angles
+    return blob
 
 if __name__ == '__main__':
     '''
